@@ -385,35 +385,37 @@ img { display: block; max-width: 100%; }
   font-family: var(--font-serif);
   font-weight: 300;
   font-size: clamp(3rem, 10vw, 6.5rem);
-  line-height: 1.1;
+  line-height: 1.2;
   color: var(--text);
   margin-bottom: 2.5rem;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.4em;
-  flex-wrap: wrap;
+  display: block;
+  text-align: center;
+  width: 100%;
 }
 
 .title-for {
+  display: block;
   font-family: var(--font-mono);
-  font-size: 0.35em;
+  font-size: 0.28em;
   color: var(--purple);
   text-transform: lowercase;
-  letter-spacing: 0.1em;
-  align-self: center;
+  letter-spacing: 0.15em;
   font-weight: 400;
+  margin-bottom: 0.3em;
 }
 
-.title-name { color: var(--purple-bright); }
+.title-name {
+  display: block;
+  color: var(--purple-bright);
+}
 
 .cursor-blink {
+  display: inline;
   font-family: var(--font-mono);
   font-weight: 300;
   font-size: 0.4em;
   color: var(--purple);
   animation: blink 1.1s step-end infinite;
-  align-self: center;
 }
 
 /* Meta tags below the title */
@@ -862,107 +864,4 @@ section { position: relative; z-index: 1; }
   .lb-prev { left: 0.5rem; }
   .lb-next { right: 0.5rem; }
   .site-footer { justify-content: center; text-align: center; }
-}
-
-/* ============================================================
-   MOBILE OVERRIDES — phones (Android & iPhone)
-   ============================================================ */
-@media (max-width: 480px) {
-
-  /* Terminal card — full width, no side gaps */
-  .terminal-card {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
-
-  /* Smaller terminal text so it doesn't overflow */
-  .terminal-body {
-    padding: 1rem 1rem 1.5rem;
-    font-size: 0.78rem;
-  }
-
-  /* Date blank — bigger touch target */
-  .blank-input {
-    font-size: 1.2rem;
-    width: 56px;
-    padding: 4px 6px;
-  }
-
-  /* Enter button — full width, easier to tap */
-  .run-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.85rem;
-    font-size: 0.95rem;
-    margin-top: 1.2rem;
-  }
-
-  /* Music panel — full width strip at top */
-  .music-panel {
-    top: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-  }
-
-  /* Hero — more breathing room below music panel */
-  .hero-section {
-    padding-top: 8rem;
-  }
-
-  /* Meta tags — stack and shrink */
-  .meta-tag {
-    font-size: 0.68rem;
-    padding: 0.25rem 0.6rem;
-    text-align: center;
-  }
-
-  /* Code block — smaller font so lines don't wrap weirdly */
-  .code-block {
-    font-size: 0.72rem;
-  }
-  .code-block-body {
-    padding: 0.8rem 0.6rem;
-  }
-
-  /* Message prose — slightly bigger for reading comfort */
-  .message-prose {
-    font-size: 1rem;
-  }
-  .message-prose p {
-    padding-left: 0.8rem;
-  }
-
-  /* Gallery — 2 columns on phone */
-  .gallery-grid {
-    column-count: 2;
-    column-gap: 0.5rem;
-  }
-
-  /* Lightbox nav arrows — closer to edges on small screens */
-  .lb-prev { left: 0.4rem; }
-  .lb-next { right: 0.4rem; }
-  .lb-nav {
-    width: 36px;
-    height: 36px;
-    font-size: 1.3rem;
-  }
-
-  /* Section padding — tighter on phone */
-  .section-inner {
-    padding: 3rem 1.2rem;
-  }
-
-  /* Footer — center everything */
-  .site-footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.3rem;
-  }
 }
