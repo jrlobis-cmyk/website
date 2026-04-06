@@ -433,3 +433,17 @@ function observeNewRevealItems() {
     .querySelectorAll(".reveal:not(.visible)")
     .forEach((el) => revealObserver.observe(el));
 }
+
+/* ── SWIPE SUPPORT for lightbox on mobile ── */
+let touchStartX = 0;
+
+document.getElementById("lightbox").addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.getElementById("lightbox").addEventListener("touchend", (e) => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) {       // must swipe at least 50px
+    lbNav(diff > 0 ? 1 : -1);     // swipe left = next, right = prev
+  }
+});
