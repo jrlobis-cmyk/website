@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>for you // 10.14.2024</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+    VERIFICATION PAGE
+    fill-in-the-blank: October __, 2024 → answer: 14
+  ============================================================ -->
+  <div id="verify-page">
+    <!-- animated scanline overlay -->
+    <div class="scanlines"></div>
+
+    <!-- grid background -->
+    <div class="grid-bg"></div>
+
+    <div class="terminal-card">
+      <!-- terminal top bar -->
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">access_request.exe</span>
+      </div>
+
+      <div class="terminal-body">
+        <div class="terminal-line">
+          <span class="prompt">$</span>
+          <span class="cmd"> initializing secure connection...</span>
+        </div>
+        <div class="terminal-line fade-line" style="--d:.3s">
+          <span class="prompt">$</span> 
+          <span class="cmd"> I hope this site can find you...</span>
+        </div>
+        <div class="terminal-line fade-line" style="--d:.6s">
+          <span class="prompt">></span>
+          <span class="cmd highlight"> ACCESS RESTRICTED</span>
+        </div>
+        <div class="terminal-line fade-line" style="--d:.9s">
+          <span class="prompt">$</span>
+          <span class="cmd"> only you know the key.</span>
+        </div>
+
+        <div class="terminal-divider fade-line" style="--d:1.2s">──────────────────────────────────</div>
+
+        <div class="verify-question fade-line" style="--d:1.4s">
+          <span class="prompt">?</span>
+          <span class="cmd"> complete the date:</span>
+        </div>
+
+        <!-- fill-in-the-blank input -->
+        <div class="blank-row fade-line" style="--d:1.7s">
+          <span class="date-part">October</span>
+          <input
+            id="answer-input"
+            type="text"
+            maxlength="2"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="__"
+            class="blank-input"
+          />
+          <span class="date-part">, 2024</span>
+        </div>
+
+        <p id="error-msg" class="error-msg" aria-live="polite">
+          <span class="prompt">!</span> incorrect. try again.
+        </p>
+
+        <button class="run-btn fade-line" style="--d:2s" onclick="checkAnswer()">
+          <span class="btn-prefix">./</span>enter 
+        </button>
+
+        <div class="terminal-line fade-line" style="--d:2.2s" style="margin-top:1rem;">
+          <span class="blink">█</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+    MAIN PAGE
+  ============================================================ -->
+  <div id="main-page" class="hidden">
+
+    <!-- background elements -->
+    <div class="scanlines"></div>
+    <div class="grid-bg"></div>
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+    <div class="glow-orb orb3"></div>
+
+    <!-- ── MUSIC PLAYER (Spotify embed, compact, collapsible) ── -->
+    <!--
+      Spotify track ID: 6YjKd9oPXKqjLUVPo4Y0oi
+      Ben&Ben — The Ones We Once Loved
+      The embed plays a 30-second preview without login.
+      With a Spotify account logged in, it plays the full song.
+    -->
+    <div id="music-panel" class="music-panel">
+      <div class="music-panel-header" onclick="toggleMusicPanel()">
+        <span class="music-label">
+          <span class="music-icon-dot"></span>
+          ♫ now playing
+        </span>
+        <span id="panel-toggle-icon">▾</span>
+      </div>
+      <div id="music-panel-body" class="music-panel-body">
+        <iframe
+          id="spotify-frame"
+          src="https://open.spotify.com/embed/track/6YjKd9oPXKqjLUVPo4Y0oi?utm_source=generator&theme=0"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          style="border-radius:8px;"
+        ></iframe>
+        <p class="music-note">// press ▶ inside the player to start the song</p>
+      </div>
+    </div>
+
+
+    <!-- ── HERO ── -->
+    <section class="hero-section">
+      <div class="hero-inner reveal">
+        <!-- code comment style heading -->
+        <div class="code-comment">/* my last message for u */</div>
+        <h1 class="hero-title">
+          <span class="title-for">for</span>
+          <span class="title-name" id="typed-name"></span>
+          <span class="cursor-blink">|</span>
+        </h1>
+        <div class="hero-meta">
+          <span class="meta-tag">date<span class="meta-eq">=</span><span class="meta-val">"October 14, 2024"</span></span>
+          <span class="meta-tag">from<span class="meta-eq">=</span><span class="meta-val">"I apologize, for coming into your life"</span></span>
+        
+        </div>
+        <div class="scroll-hint">scroll_down() ↓</div>
+      </div>
+    </section>
+
+
+    <!-- ── MESSAGE SECTION ── -->
+    <section class="message-section">
+      <div class="section-inner">
+
+        <!-- section label -->
+        <div class="section-label reveal">
+          <span class="label-line"></span>
+          <span class="label-text">// message.txt</span>
+          <span class="label-line"></span>
+        </div>
+
+        <!-- prose message -->
+        <div class="message-prose reveal">
+          <!--
+            CUSTOMIZATION: Replace these paragraphs with your own words.
+          -->
+<p>
+  I want to apologize for everything from betraying your trust to even coming into your life. I know that by entering your life, I brought more pain than I deserved to, and I regret every moment I caused hurt. I don’t ask for forgiveness for all that I’ve done, I just want to leave you with this final message, so you know that I see the consequences of my choices and the hurt I’ve caused.
+</p>
+<p>
+  Thank you for the more than a year we shared, for loving me, and for letting me feel your genuine care and warmth. Even in your love, I still failed you. Even with all the kindness and patience you showed, I betrayed your trust. I am sorry for entering our relationship with an unfinished past, for the mistakes I carried into it, and for every moment I caused you sadness or disappointment.
+</p>
+<p>
+  I think about the way you laughed, the way you cared, the way you made every ordinary moment feel extraordinary. I took that for granted. I wish I could go back and do things differently, to hold your heart gently instead of making mistakes that hurt it. But I can’t. All I can do now is own the mistakes, own the guilt, and let you know that I understand the depth of what I’ve broken.
+</p>
+<p>
+  I do not expect forgiveness. I will carry this burden for the rest of my life. I will live with the memory of my failures, the weight of my actions, and the knowledge that I let someone I loved down when I should have been their safe place. To your parents and family, I am deeply sorry for hurting Jhaz and betraying your trust. Thank you for accepting me like part of your family, even for a moment, despite everything. I know I do not deserve that kindness, and for that, I am even more remorseful.
+</p>
+<p>
+  Jazlee, thank you again for everything for your patience, your love, your trust, and even your tears. Please take care of yourself always, because you deserve all the happiness in the world. I hope your future is filled with joy, love, and people who will never betray you. You are remarkable, and I am sorry for not seeing that in time, for letting my own flaws overshadow the love we had.
+</p>
+<p>
+  I apologize once more for coming into your life and for the pain I caused. I do not ask you to forgive me. I only hope that by reading this, you know that I see what I did wrong, that I regret it deeply, and that I carry this guilt with me as it should be carried. This is my final message  a full acknowledgment of the wrongs I have done, a farewell from me to you, and a wish for you to live your life with all the love and happiness I could not give you.
+</p>
+          <p class="sig">
+            <span class="comment">// Thank you.</span><br/>
+            <span class="kw">PLEASE</span> <span class="str">Dont forgive me.</span><span class="op">;</span>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ── GALLERY SECTION ── -->
+    <section class="gallery-section">
+      <div class="section-inner">
+
+        <div class="section-label reveal">
+          <span class="label-line"></span>
+          <span class="label-text">// memories[]</span>
+          <span class="label-line"></span>
+        </div>
+
+        <p class="gallery-sub reveal">
+          <span class="comment">/* <span id="photo-count-display">loading</span> items in array */</span>
+        </p>
+
+        <!--
+          HOW TO ADD PHOTOS:
+          ══════════════════════════════════════════════
+          1. Create a "photos/" folder next to index.html
+          2. Drop your images in it (jpg, png, webp)
+          3. Open script.js → update the PHOTOS array
+             with your filenames like "photos/001.jpg"
+          4. Gallery auto-builds. Loads 30 at a time.
+          5. Click any photo → full-screen lightbox opens.
+          ══════════════════════════════════════════════
+        -->
+        <div class="gallery-grid" id="gallery-grid"></div>
+
+        <div class="load-more-wrap" id="load-more-wrap">
+          <button class="load-more-btn" onclick="loadMorePhotos()">
+            <span class="btn-prefix">./</span>load_more.sh
+            <span id="remaining-count" class="remaining"></span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ── CLOSING ── -->
+    <section class="closing-section">
+      <div class="section-inner reveal">
+        <div class="section-label">
+          <span class="label-line"></span>
+          <span class="label-text">// end of file</span>
+          <span class="label-line"></span>
+        </div>
+
+        <div class="closing-block">
+          <div class="closing-code">
+            <span class="comment">/*</span><br/>
+            <span class="comment">&nbsp;* No matter what comes next —</span><br/>
+            <span class="comment">&nbsp;* I am grateful for every</span><br/>
+            <span class="comment">&nbsp;* moment with you.</span><br/>
+            <span class="comment">&nbsp;*/</span>
+          </div>
+          <div class="closing-export">
+            <span class="kw">I wish you the best</span> <span class="str">pasensya na.</span><span class="op">;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <span class="comment">// built with love &amp; a lot of ctrl+z</span>
+      <span class="footer-hash">commit #10142024</span>
+    </footer>
+
+  </div><!-- end #main-page -->
+
+
+  <!-- LIGHTBOX (injected by JS) -->
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">&#8249;</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="" />
+    </div>
+    <button class="lb-nav lb-next" onclick="lbNav(1)">&#8250;</button>
+    <p class="lb-caption" id="lb-caption"></p>
+    <p class="lb-counter" id="lb-counter"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
