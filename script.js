@@ -8,33 +8,45 @@
    SECTION 1: CONFIGURATION — edit these
    ================================================================ */
 
-/*
-  ✏️  Correct answer for "October __, 2024"
-  Change this string if you change the question.
-*/
-const CORRECT_ANSWER = "14";
-
-/*
-  ✏️  The name that types itself out in the hero section.
-  Change "My Love" to their actual name or nickname.
-*/
 const DISPLAY_NAME = "Jazlee";
 
 /*
-  ✏️  YOUR PHOTOS
-  ─────────────────────────────────────────────────────────
-  Put all your images in a folder called "photos/" next to index.html.
-  Then list every filename here.
-
-  Example:
-    "photos/IMG_001.jpg",
-    "photos/date-night.jpg",
-    "photos/birthday.jpg",
-
-  Supports: .jpg  .jpeg  .png  .webp  .gif
-  You can have 10 or 200 — the gallery handles both.
-  ─────────────────────────────────────────────────────────
+  Multi-step verification questions & answers.
+  Each step must be passed in order.
 */
+const VERIFICATION_STEPS = [
+  {
+    question: "complete the date:",
+    prefix:   "10/",
+    suffix:   "/2024",
+    answer:   "14",
+    inputmode: "numeric",
+    maxlength: "2",
+    placeholder: "__",
+    hint:     null,
+  },
+  {
+    question: "what is my favorite ulam?",
+    prefix:   "",
+    suffix:   "",
+    answer:   "chicken curry",
+    inputmode: "text",
+    maxlength: "20",
+    placeholder: "_ _ _ _ _ _ _ _ _ _",
+    hint:     "// two words, all lowercase",
+  },
+  {
+    question: "what is our favorite snack on dates?",
+    prefix:   "",
+    suffix:   "",
+    answer:   "french fries",
+    inputmode: "text",
+    maxlength: "20",
+    placeholder: "_ _ _ _ _ _ _ _ _ _",
+    hint:     "// two words, all lowercase",
+  },
+];
+
 const PHOTOS = [
   "PHOTOS/1725268195393.jpg",
   "PHOTOS/1725275807403_1.jpg",
@@ -143,11 +155,6 @@ const PHOTOS = [
   "PHOTOS/Messenger_creation_FEEFCFD9-CDBA-462D-9914-37C9BC71D109.jpeg"
 ];
 
-/*
-  ✏️  OPTIONAL CAPTIONS
-  One caption per photo. If you have more photos than captions,
-  it cycles through this list. Personalize as many as you want.
-*/
 const CAPTIONS = [
   "the day we laughed without worry.",
   "i still remember your smile here.",
@@ -171,28 +178,103 @@ const CAPTIONS = [
   "forever holding onto this memory, with all its love and regret.",
 ];
 
-/* How many photos to show per batch (good balance of perf & UX) */
 const BATCH_SIZE = 30;
 
 
 /* ================================================================
-   SECTION 2: VERIFICATION LOGIC
+   SECTION 2: MULTI-STEP VERIFICATION LOGIC
    ================================================================ */
 
-function checkAnswer() {
-  const input    = document.getElementById("answer-input");
-  const errorMsg = document.getElementById("error-msg");
-  const answer   = input.value.trim();
+let currentStep = 0;
 
-  if (answer === CORRECT_ANSWER) {
+/* Renders the UI for the given step index */
+function renderStep(stepIndex) {
+  const step = VERIFICATION_STEPS[stepIndex];
+
+  /* ── progress dots ── */
+  const dots = document.querySelectorAll(".step-dot");
+  dots.forEach((dot, i) => {
+    dot.classList.remove("active", "done");
+    if (i < stepIndex)  dot.classList.add("done");
+    if (i === stepIndex) dot.classList.add("active");
+  });
+
+  /* ── step counter ── */
+  document.getElementById("step-counter").textContent =
+    `[${stepIndex + 1}/${VERIFICATION_STEPS.length}]`;
+
+  /* ── question ── */
+  const qEl = document.getElementById("verify-question-text");
+  qEl.style.opacity = "0";
+  setTimeout(() => {
+    qEl.textContent = step.question;
+    qEl.style.opacity = "1";
+  }, 180);
+
+  /* ── prefix / suffix ── */
+  const prefixEl = document.getElementById("date-prefix");
+  const suffixEl = document.getElementById("date-suffix");
+  prefixEl.textContent = step.prefix;
+  suffixEl.textContent = step.suffix;
+  prefixEl.style.display = step.prefix ? "inline" : "none";
+  suffixEl.style.display = step.suffix ? "inline" : "none";
+
+  /* ── input ── */
+  const input = document.getElementById("answer-input");
+  input.value       = "";
+  input.inputMode   = step.inputmode;
+  input.maxLength   = step.maxlength;
+  input.placeholder = step.placeholder;
+  input.focus();
+
+  /* ── hint ── */
+  const hintEl = document.getElementById("step-hint");
+  if (step.hint) {
+    hintEl.textContent = step.hint;
+    hintEl.style.display = "block";
+  } else {
+    hintEl.style.display = "none";
+  }
+
+  /* ── clear error ── */
+  document.getElementById("error-msg").classList.remove("show");
+
+  /* ── animate blank row in ── */
+  const blankRow = document.querySelector(".blank-row");
+  blankRow.classList.remove("step-slide-in");
+  void blankRow.offsetWidth; // reflow
+  blankRow.classList.add("step-slide-in");
+}
+
+function checkAnswer() {
+  const input  = document.getElementById("answer-input");
+  const errorMsg = document.getElementById("error-msg");
+  const raw    = input.value.trim();
+  const answer = raw.toLowerCase();
+  const expected = VERIFICATION_STEPS[currentStep].answer.toLowerCase();
+
+  if (answer === expected) {
     errorMsg.classList.remove("show");
-    revealMainPage();
+
+    /* Mark current dot as done */
+    const dots = document.querySelectorAll(".step-dot");
+    dots[currentStep].classList.remove("active");
+    dots[currentStep].classList.add("done");
+
+    currentStep++;
+
+    if (currentStep >= VERIFICATION_STEPS.length) {
+      /* All steps passed — show access granted then reveal */
+      showAccessGranted();
+    } else {
+      /* Advance to next step */
+      renderStep(currentStep);
+    }
   } else {
     errorMsg.classList.add("show");
     input.value = "";
     input.focus();
 
-    /* Shake the blank input */
     input.animate(
       [
         { transform: "translateX(0)" },
@@ -207,20 +289,42 @@ function checkAnswer() {
   }
 }
 
-/* Enter key submits */
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("answer-input");
+function showAccessGranted() {
+  const body = document.querySelector(".terminal-body");
+  body.innerHTML = `
+    <div class="access-granted-msg">
+      <div class="ag-line">
+        <span class="prompt">$</span>
+        <span class="cmd"> verifying identity...</span>
+      </div>
+      <div class="ag-line ag-delay-1">
+        <span class="prompt">></span>
+        <span class="cmd highlight"> ALL CHECKS PASSED ✓</span>
+      </div>
+      <div class="ag-line ag-delay-2">
+        <span class="prompt">$</span>
+        <span class="cmd"> welcome, Jazlee.</span>
+      </div>
+      <div class="ag-line ag-delay-3">
+        <span class="prompt">$</span>
+        <span class="cmd"> loading message...</span>
+      </div>
+      <div class="progress-bar-wrap ag-delay-4">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+    </div>
+  `;
 
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") checkAnswer();
-  });
+  /* Animate progress bar then transition */
+  setTimeout(() => {
+    const fill = document.getElementById("progress-bar-fill");
+    if (fill) fill.style.width = "100%";
+  }, 900);
 
-  /* Hide error when typing again */
-  input.addEventListener("input", () => {
-    document.getElementById("error-msg").classList.remove("show");
-  });
-});
-
+  setTimeout(() => {
+    revealMainPage();
+  }, 2200);
+}
 
 /* ================================================================
    SECTION 3: PAGE TRANSITION
@@ -237,7 +341,6 @@ function revealMainPage() {
     mainPage.classList.remove("hidden");
     mainPage.classList.add("enter");
 
-    /* Kick everything off */
     typeHeroName();
     buildGallery();
     setupScrollReveal();
@@ -246,27 +349,42 @@ function revealMainPage() {
 
 
 /* ================================================================
-   SECTION 4: TYPING EFFECT — hero name
+   SECTION 4: DOM READY — init step 0
+   ================================================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderStep(0);
+
+  const input = document.getElementById("answer-input");
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkAnswer();
+  });
+  input.addEventListener("input", () => {
+    document.getElementById("error-msg").classList.remove("show");
+  });
+});
+
+
+/* ================================================================
+   SECTION 5: TYPING EFFECT — hero name
    ================================================================ */
 
 function typeHeroName() {
   const el    = document.getElementById("typed-name");
   const name  = DISPLAY_NAME;
   let   index = 0;
-
-  /* Small delay before starting */
   setTimeout(() => {
     const interval = setInterval(() => {
       el.textContent += name[index];
       index++;
       if (index >= name.length) clearInterval(interval);
-    }, 90); /* ms per character — lower = faster */
+    }, 90);
   }, 600);
 }
 
 
 /* ================================================================
-   SECTION 5: MUSIC PANEL TOGGLE
+   SECTION 6: MUSIC PANEL TOGGLE
    ================================================================ */
 
 function toggleMusicPanel() {
@@ -276,60 +394,41 @@ function toggleMusicPanel() {
 
 
 /* ================================================================
-   SECTION 6: GALLERY BUILDER
-   Renders photos in batches for performance with 100–200 images.
+   SECTION 7: GALLERY BUILDER
    ================================================================ */
 
-let loadedCount = 0; /* tracks how many photos have been added to DOM */
+let loadedCount = 0;
 
 function buildGallery() {
   const countDisplay = document.getElementById("photo-count-display");
   countDisplay.textContent = `${PHOTOS.length}`;
-
-  /* Render first batch */
   renderBatch(0, Math.min(BATCH_SIZE, PHOTOS.length));
-
-  /* Show/hide load more */
   updateLoadMoreButton();
 }
 
 function renderBatch(start, end) {
   const grid = document.getElementById("gallery-grid");
-
   for (let i = start; i < end; i++) {
     const src     = PHOTOS[i];
     const caption = CAPTIONS[i % CAPTIONS.length];
-
-    const item = document.createElement("div");
-    item.className  = "gallery-item reveal";
+    const item    = document.createElement("div");
+    item.className   = "gallery-item reveal";
     item.dataset.idx = i;
-
     item.innerHTML = `
       <div class="gallery-img-wrap">
-        <img
-          src="${src}"
-          alt="memory ${i + 1}"
-          loading="lazy"
-          onerror="this.closest('.gallery-item').style.display='none'"
-        />
+        <img src="${src}" alt="memory ${i + 1}" loading="lazy"
+             onerror="this.closest('.gallery-item').style.display='none'" />
         <div class="gallery-overlay">
           <p class="gallery-caption">${caption}</p>
         </div>
         <span class="gallery-index">[${String(i).padStart(3, "0")}]</span>
       </div>
     `;
-
-    /* Lightbox on click */
     item.addEventListener("click", () => openLightbox(i));
-
     grid.appendChild(item);
   }
-
   loadedCount = end;
-
-  /* Re-observe newly added items */
   observeNewRevealItems();
-
   updateLoadMoreButton();
 }
 
@@ -342,7 +441,6 @@ function updateLoadMoreButton() {
   const wrap      = document.getElementById("load-more-wrap");
   const remaining = document.getElementById("remaining-count");
   const left      = PHOTOS.length - loadedCount;
-
   if (loadedCount >= PHOTOS.length) {
     wrap.classList.add("done");
   } else {
@@ -353,8 +451,7 @@ function updateLoadMoreButton() {
 
 
 /* ================================================================
-   SECTION 7: LIGHTBOX
-   Full-screen viewer with keyboard + click navigation.
+   SECTION 8: LIGHTBOX
    ================================================================ */
 
 let currentLbIndex = 0;
@@ -365,12 +462,10 @@ function openLightbox(index) {
   const img     = document.getElementById("lb-img");
   const caption = document.getElementById("lb-caption");
   const counter = document.getElementById("lb-counter");
-
-  img.src              = PHOTOS[index];
-  img.alt              = `memory ${index + 1}`;
-  caption.textContent  = CAPTIONS[index % CAPTIONS.length];
-  counter.textContent  = `[${String(index).padStart(3, "0")}] / [${String(PHOTOS.length - 1).padStart(3, "0")}]`;
-
+  img.src             = PHOTOS[index];
+  img.alt             = `memory ${index + 1}`;
+  caption.textContent = CAPTIONS[index % CAPTIONS.length];
+  counter.textContent = `[${String(index).padStart(3, "0")}] / [${String(PHOTOS.length - 1).padStart(3, "0")}]`;
   lb.classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -382,31 +477,26 @@ function closeLightbox() {
 
 function lbNav(direction) {
   let next = currentLbIndex + direction;
-  if (next < 0)             next = PHOTOS.length - 1;
+  if (next < 0)              next = PHOTOS.length - 1;
   if (next >= PHOTOS.length) next = 0;
   openLightbox(next);
 }
 
-/* Keyboard controls for lightbox */
 document.addEventListener("keydown", (e) => {
   const lb = document.getElementById("lightbox");
   if (!lb.classList.contains("open")) return;
-
   if (e.key === "ArrowRight") lbNav(1);
   if (e.key === "ArrowLeft")  lbNav(-1);
   if (e.key === "Escape")     closeLightbox();
 });
 
-/* Click backdrop to close */
 document.getElementById("lightbox").addEventListener("click", (e) => {
   if (e.target === document.getElementById("lightbox")) closeLightbox();
 });
 
 
 /* ================================================================
-   SECTION 8: SCROLL REVEAL
-   IntersectionObserver triggers the .reveal → .visible transition.
-   Called on page load AND after every gallery batch.
+   SECTION 9: SCROLL REVEAL
    ================================================================ */
 
 let revealObserver = null;
@@ -417,33 +507,26 @@ function setupScrollReveal() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          revealObserver.unobserve(entry.target); /* animate once */
+          revealObserver.unobserve(entry.target);
         }
       });
     },
     { threshold: 0.1 }
   );
-
   observeNewRevealItems();
 }
 
 function observeNewRevealItems() {
   if (!revealObserver) return;
-  document
-    .querySelectorAll(".reveal:not(.visible)")
-    .forEach((el) => revealObserver.observe(el));
+  document.querySelectorAll(".reveal:not(.visible)").forEach((el) => revealObserver.observe(el));
 }
 
-/* ── SWIPE SUPPORT for lightbox on mobile ── */
+/* ── SWIPE for lightbox ── */
 let touchStartX = 0;
-
 document.getElementById("lightbox").addEventListener("touchstart", (e) => {
   touchStartX = e.changedTouches[0].screenX;
 });
-
 document.getElementById("lightbox").addEventListener("touchend", (e) => {
   const diff = touchStartX - e.changedTouches[0].screenX;
-  if (Math.abs(diff) > 50) {       // must swipe at least 50px
-    lbNav(diff > 0 ? 1 : -1);     // swipe left = next, right = prev
-  }
+  if (Math.abs(diff) > 50) lbNav(diff > 0 ? 1 : -1);
 });
